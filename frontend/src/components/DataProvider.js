@@ -10,6 +10,7 @@ class DataProvider extends Component {
       loaded: false,
       placeholder: "Loading..."
     };
+    /* global fetch*/
   componentDidMount() {
     fetch(this.props.endpoint)
       .then(response => {

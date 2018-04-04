@@ -1,25 +1,28 @@
 import React from "react";
 import PropTypes from "prop-types";
 import shortid from "shortid";
+import {RaisedButton} from "material-ui";
 const uuid = shortid.generate;
-const Table = ({ data }) =>
+
+const Table = ({data}) =>
   !data.length ? (
     <p>Nothing to show</p>
   ) : (
     <div className="column">
+      <RaisedButton label="Primary" primary={true}/>
       <h2 className="subtitle">
         To show <strong>{data.length} items</strong>
       </h2>
       <table className="table is-striped">
         <thead>
           <tr>
-            {Object.entries(data[0]).map(el => <th key={uuid()}>{el[0]}</th>)}
+            {Object.entries(data[0]).map((el) => <th key={uuid()}>{el[0]}</th>)}
           </tr>
         </thead>
         <tbody>
-          {data.map(el => (
+          {data.map((el) => (
             <tr key={el.id}>
-              {Object.entries(el).map(el => <td key={uuid()}>{el[1]}</td>)}
+              {Object.entries(el).map((el) => <td key={uuid()}>{el[1]}</td>)}
             </tr>
           ))}
         </tbody>
