@@ -1,13 +1,17 @@
 import React from "react"
 import ReactDOM from "react-dom";
-import DataProvider from "./DataProvider";
-import Table from "./Table";
-import {MuiThemeProvider} from "material-ui";
+import { HashRouter as Router } from "react-router-dom";
+import Routes from "../router/urls";
+import Header from "../Header";
 const App = () => (
-    <MuiThemeProvider>
-        <DataProvider endpoint="api/lead/"
-                      render={data => <Table data={data} />} />
-    </MuiThemeProvider>
+        <Router>
+            <div>
+                <Header/>
+                <div style={{margin: 10}}>
+                    <Routes />
+                </div>
+            </div>
+        </Router>
 
 );
 /* global document*/
