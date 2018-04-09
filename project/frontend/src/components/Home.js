@@ -22,31 +22,34 @@ class Home extends React.Component {
     };
     state = {
       dense: false,
-      secondary: false,
+      secondary: true,
     };
     navigate = (path) => {
       this.context.router.history.push({
         pathname: path,
+        state: "HI",
         });
     };
+
 
     render() {
       const {classes} = this.props;
       const {dense, secondary} = this.state;
+      const titles = ["File 1", "README", "TODO"];
 
       return (
         <div className={classes.root}>
           <Grid container spacing={24} justify={'center'}>
             <Grid item xs={12}>
               <Typography variant="title" className={classes.title}>
-                Icon with text
+                Files
               </Typography>
               <div className={classes.demo}>
                 <List dense={dense}>
-                  {[0,1,2].map(value=> (
+                  {titles.map(value=> (
                     <ListItem button key={`item-${value}`} onClick={()=>this.navigate('/second')}>
                       <ListItemText
-                        primary={`item ${value}`}
+                        primary={`${value}`}
                         secondary={secondary ? 'Secondary text' : null}
                       />
                     </ListItem>
