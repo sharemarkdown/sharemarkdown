@@ -49,6 +49,7 @@ class Home extends React.Component {
                   {titles.map(value=> (
                     <ListItem button key={`item-${value}`} onClick={()=>this.navigate('/second')}>
                       <ListItemText
+                        name="name"
                         primary={`${value}`}
                         secondary={secondary ? 'Secondary text' : null}
                       />

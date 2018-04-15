@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --mode development ./frontend/src/index.js --output ./frontend/static/frontend/main.js",
-    "build": "webpack --mode production ./frontend/src/index.js --output ./frontend/static/frontend/main.js"
+    "flush": "python3.6 ./project/manage.py flush --no-input",
+    "e2e": "cypress open --project ./project/frontend/",
+    "dev": "webpack --mode development ./project/frontend/src/index.js --output ./project/frontend/static/frontend/main.js",
+    "build": "webpack --mode production ./project/frontend/src/index.js --output ./project/frontend/static/frontend/main.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +18,7 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
+    "cypress": "^2.1.0",
     "eslint": "^4.19.1",
     "eslint-config-google": "^0.9.1",
     "eslint-loader": "^2.0.0",
