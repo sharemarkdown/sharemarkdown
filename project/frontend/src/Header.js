@@ -37,7 +37,9 @@ export default class DrawerSimpleExample extends React.Component{
                 >
                     <div style={{width: 250}}>
                         <MenuItem onClick={()=>this.navigate('/')}>Home</MenuItem>
-                        <MenuItem onClick={()=>this.navigate('/first')}>About</MenuItem>
+                        <MenuItem onClick={()=>this.navigate('/register')}>Register</MenuItem>
+                        <MenuItem onClick={()=>this.navigate('/login')}>Login</MenuItem>
+
                     </div>
                 </Drawer>
             </div>
