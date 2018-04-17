@@ -1,10 +1,15 @@
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { userActions } from "../js/actions/userActions";
+
 import {
     AppBar, Button, Card, CardActions, FormControl, Input, InputAdornment, InputLabel, Toolbar,
-    Typography
+    Typography, Snackbar
 } from "material-ui";
 import {AccountCircle, Email, Lock, PermIdentity} from "material-ui-icons";
 const styles = theme => ({
@@ -16,35 +21,64 @@ const styles = theme => ({
     }
 });
 
+
 class Register extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
+            user : {
+              firstName: '',
+              lastName: '',
+              username: '',
+              password: '',
+              confirmPassword: '',
+              email: ''
+            },
             direction: 'row',
             justify: 'center',
             alignItems: 'center',
-            firstName: '',
-            lastName: '',
-            username: '',
-            password: '',
-            confirmPassword: '',
-            email: ''
+            submitted: false,
+            open: true,
 
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
+    static contextTypes = {
+        router: PropTypes.object
+    };
 
+    navigate = (path) => {
+        this.context.router.history.push(path);
+    };
 
     handleChange = event => {
+        const { name, value } = event.target;
+        const { user } = this.state;
         this.setState({
-            [event.target.name]: event.target.value,
+            user: {
+              ...user,
+              [name]: value
+            }
         });
     };
 
+    handleSubmit(event){
+        event.preventDefault();
+
+        this.setState({ submitted: true});
+        const {user} = this.state;
+        const {dispatch} = this.props;
+        if(user.confirmPassword == user.password){
+            dispatch(userActions.register(user));
+        }
+    }
+
     render() {
-        const { classes } = this.props;
-        const { alignItems, direction, justify } = this.state;
+        const { classes, register } = this.props;
+        const { alignItems, direction, justify, user, open } = this.state;
         return (
             <Grid container className={classes.root}>
                 <Grid item xs={12}>
@@ -66,126 +100,145 @@ class Register extends React.Component {
                                     </Toolbar>
                                 </AppBar>
 
-                                <Grid container
-                                      alignItems={alignItems}
-                                      direction={direction}
-                                      justify={justify} sytle={{padding: 100}}>
 
-                                    <Grid item xs={10}>
-                                        <Grid container spacing={16}>
-                                            <Grid item xs={6}>
-                                                <FormControl fullWidth className={classes.margin} required>
-                                                    <InputLabel htmlFor="firstName">First Name</InputLabel>
-                                                    <Input
-                                                        id="firstName"
-                                                        name="firstName"
-                                                        value={this.state.firstName}
-                                                        onChange={this.handleChange}
-                                                        startAdornment={
-                                                            <InputAdornment position="start">
-                                                                <PermIdentity />
-                                                            </InputAdornment>
-                                                        }
-                                                    />
-                                                </FormControl>
+                                <form onSubmit={this.handleSubmit}>
+                                    <Grid container
+                                          alignItems={alignItems}
+                                          direction={direction}
+                                          justify={justify} sytle={{padding: 100}}>
+
+
+                                        <Grid item xs={10}>
+                                            <Grid container spacing={16}>
+                                                <Grid item xs={6}>
+                                                    <FormControl fullWidth className={classes.margin} required>
+                                                        <InputLabel htmlFor="firstName">First Name</InputLabel>
+                                                        <Input
+                                                            id="firstName"
+                                                            name="firstName"
+                                                            value={user.firstName}
+                                                            onChange={this.handleChange}
+                                                            startAdornment={
+                                                                <InputAdornment position="start">
+                                                                    <PermIdentity />
+                                                                </InputAdornment>
+                                                            }
+                                                        />
+                                                    </FormControl>
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <FormControl fullWidth className={classes.margin} required>
+                                                        <InputLabel htmlFor="lastName">Last Name</InputLabel>
+                                                        <Input
+                                                            id="lastName"
+                                                            name="lastName"
+                                                            value={user.lastName}
+                                                            onChange={this.handleChange}
+                                                            startAdornment={
+                                                                <InputAdornment position="start">
+                                                                    <PermIdentity />
+                                                                </InputAdornment>
+                                                            }
+                                                        />
+                                                    </FormControl>
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={6}>
-                                                <FormControl fullWidth className={classes.margin} required>
-                                                    <InputLabel htmlFor="lastName">Last Name</InputLabel>
-                                                    <Input
-                                                        id="lastName"
-                                                        name="lastName"
-                                                        value={this.state.lastName}
-                                                        onChange={this.handleChange}
-                                                        startAdornment={
-                                                            <InputAdornment position="start">
-                                                                <PermIdentity />
-                                                            </InputAdornment>
-                                                        }
-                                                    />
-                                                </FormControl>
-                                            </Grid>
+                                        </Grid>
+
+
+                                        <Grid item xs={10}>
+                                            <FormControl fullWidth className={classes.margin} required>
+                                                <InputLabel htmlFor="username">Username</InputLabel>
+                                                <Input
+                                                    id="username"
+                                                    name="username"
+                                                    value={user.username}
+                                                    onChange={this.handleChange}
+                                                    startAdornment={
+                                                        <InputAdornment position="start">
+                                                            <AccountCircle />
+                                                        </InputAdornment>
+                                                    }
+                                                />
+                                            </FormControl>
+                                        </Grid>
+
+                                        <Grid item xs={10}>
+                                            <FormControl fullWidth className={classes.margin} required>
+                                                <InputLabel htmlFor="password">Password</InputLabel>
+                                                <Input
+                                                    id="password"
+                                                    name="password"
+                                                    type="password"
+                                                    value={user.password}
+                                                    onChange={this.handleChange}
+                                                    startAdornment={
+                                                        <InputAdornment position="start">
+                                                            <Lock />
+                                                        </InputAdornment>
+                                                    }
+                                                />
+                                            </FormControl>
+                                        </Grid>
+
+
+
+                                        <Grid item xs={10}>
+                                            <FormControl fullWidth className={classes.margin} required>
+                                                <InputLabel htmlFor="confirmPassword">Confirm Password</InputLabel>
+                                                <Input
+                                                    id="confirmPassword"
+                                                    type="password"
+                                                    name="confirmPassword"
+                                                    value={user.confirmPassword}
+                                                    onChange={this.handleChange}
+                                                    startAdornment={
+                                                        <InputAdornment position="start">
+                                                            <Lock />
+                                                        </InputAdornment>
+                                                    }
+                                                />
+                                            </FormControl>
+                                        </Grid>
+
+                                        <Grid item xs={10}>
+                                            <FormControl fullWidth className={classes.margin} required>
+                                                <InputLabel htmlFor="email">Email</InputLabel>
+                                                <Input
+                                                    id="email"
+                                                    name="email"
+                                                    value={user.email}
+                                                    onChange={this.handleChange}
+                                                    startAdornment={
+                                                        <InputAdornment position="start">
+                                                            <Email />
+                                                        </InputAdornment>
+                                                    }
+                                                />
+                                            </FormControl>
                                         </Grid>
                                     </Grid>
 
+                                    <CardActions>
+                                        <Button  type="submit" size="small" color="primary" >
+                                            Submit
+                                        </Button>
+                                      { register.registered &&
 
-                                    <Grid item xs={10}>
-                                        <FormControl fullWidth className={classes.margin} required>
-                                            <InputLabel htmlFor="username">Username</InputLabel>
-                                            <Input
-                                                id="username"
-                                                name="username"
-                                                value={this.state.username}
-                                                onChange={this.handleChange}
-                                                startAdornment={
-                                                    <InputAdornment position="start">
-                                                        <AccountCircle />
-                                                    </InputAdornment>
-                                                }
+                                        <Snackbar
+                                            anchorOrigin={{vertical:'bottom', horizontal:'center'}}
+                                            open={open}
+                                            onClose={() => {
+                                                this.setState({open: false});
+                                                this.navigate("/login");
+                                            }}
+                                            autoHideDuration={2000}
+                                            message={<span> Register Success </span>}
                                             />
-                                        </FormControl>
-                                    </Grid>
 
-                                    <Grid item xs={10}>
-                                        <FormControl fullWidth className={classes.margin} required>
-                                            <InputLabel htmlFor="password">Password</InputLabel>
-                                            <Input
-                                                id="password"
-                                                name="password"
-                                                type="password"
-                                                value={this.state.password}
-                                                onChange={this.handleChange}
-                                                startAdornment={
-                                                    <InputAdornment position="start">
-                                                        <Lock />
-                                                    </InputAdornment>
-                                                }
-                                            />
-                                        </FormControl>
-                                    </Grid>
-
-
-
-                                    <Grid item xs={10}>
-                                        <FormControl fullWidth className={classes.margin} required>
-                                            <InputLabel htmlFor="confirmPassword">Confirm Password</InputLabel>
-                                            <Input
-                                                id="confirmPassword"
-                                                type="password"
-                                                name="confirmPassword"
-                                                value={this.state.confirmPassword}
-                                                onChange={this.handleChange}
-                                                startAdornment={
-                                                    <InputAdornment position="start">
-                                                        <Lock />
-                                                    </InputAdornment>
-                                                }
-                                            />
-                                        </FormControl>
-                                    </Grid>
-
-                                    <Grid item xs={10}>
-                                        <FormControl fullWidth className={classes.margin} required>
-                                            <InputLabel htmlFor="email">Email</InputLabel>
-                                            <Input
-                                                id="email"
-                                                name="email"
-                                                value={this.state.email}
-                                                onChange={this.handleChange}
-                                                startAdornment={
-                                                    <InputAdornment position="start">
-                                                        <Email />
-                                                    </InputAdornment>
-                                                }
-                                            />
-                                        </FormControl>
-                                    </Grid>
-                                </Grid>
-                                <CardActions>
-                                    <Button size="small" color="primary">
-                                        Submit
-                                    </Button>
-                                </CardActions>
+                                      }
+                                    </CardActions>
+                                </form>
                             </Card>
                         </Grid>
                     </Grid>
@@ -197,6 +250,15 @@ class Register extends React.Component {
 
 Register.propTypes = {
     classes: PropTypes.object.isRequired,
+    dispatch: PropTypes.func,
+    register: PropTypes.object,
 };
 
-export default withStyles(styles)(Register);
+
+
+function mapStateToProps(state){
+    const register  = state.register;
+    return { register };
+}
+
+export default compose(withStyles(styles), connect(mapStateToProps))(Register);

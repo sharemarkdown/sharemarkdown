@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "flush": "python3.6 ./project/manage.py flush --no-input",
-    "e2e": "cypress open --project ./project/frontend/",
     "dev": "webpack --mode development ./project/frontend/src/index.js --output ./project/frontend/static/frontend/main.js --progress --colors",
     "build": "webpack --mode production ./project/frontend/src/index.js --output ./project/frontend/static/frontend/main.js"
   },
@@ -13,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "axios": "^0.18.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -24,11 +24,15 @@
     "eslint-config-google": "^0.9.1",
     "eslint-loader": "^2.0.0",
     "eslint-plugin-react": "^7.7.0",
+    "history": "^4.7.2",
     "prop-types": "^15.6.1",
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
     "react-redux": "^5.0.7",
+    "react-router-redux": "^5.0.0-alpha.9",
     "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0",
     "shortid": "^2.2.8",
     "uuid": "^3.2.1",
     "webpack": "^4.4.1",

@@ -9,6 +9,7 @@ const App = () => (
                 <Header/>
                 <div style={{margin: 10}}>
                     <Routes />
+
                 </div>
             </div>
         </Router>
