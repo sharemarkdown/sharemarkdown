@@ -5,7 +5,7 @@ import { withStyles } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
 import {
     AppBar, Button, Card, CardActions, FormControl, Input, InputAdornment, InputLabel, Toolbar,
-    Typography, Snackbar
+    Typography
 } from "material-ui";
 import {AccountCircle, Lock} from "material-ui-icons";
 import { connect } from 'react-redux';
@@ -31,19 +31,11 @@ class Login extends React.Component {
             alignItems: 'center',
             username: '',
             password: '',
-            open: true,
 
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-    static contextTypes = {
-        router: PropTypes.object
-    };
-
-    navigate = (path) => {
-        this.context.router.history.push(path);
-    };
 
     handleChange = event => {
         this.setState({
@@ -63,8 +55,8 @@ class Login extends React.Component {
 
 
     render() {
-        const { classes, login } = this.props;
-        const { alignItems, direction, justify, open } = this.state;
+        const { classes } = this.props;
+        const { alignItems, direction, justify } = this.state;
         return (
             <Grid container className={classes.root}>
                 <Grid item xs={12}>
@@ -133,20 +125,7 @@ class Login extends React.Component {
                                         <Button type="submit" size="small" color="primary">
                                             Login
                                         </Button>
-                                      { login.logged_in &&
 
-                                      <Snackbar
-                                        anchorOrigin={{vertical:'bottom', horizontal:'center'}}
-                                        open={open}
-                                        onClose={() => {
-                                            this.setState({open: false});
-                                            this.navigate("/");
-                                        }}
-                                        autoHideDuration={2000}
-                                        message={<span> Login Success </span>}
-                                      />
-
-                                      }
                                     </CardActions>
                                 </form>
                             </Card>
@@ -162,7 +141,7 @@ class Login extends React.Component {
 
 function mapStateToProps(state){
 
-  const login  = state.login;
+  const login  = state;
 
   return { login };
 }

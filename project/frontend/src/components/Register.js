@@ -9,7 +9,7 @@ import { userActions } from "../js/actions/userActions";
 
 import {
     AppBar, Button, Card, CardActions, FormControl, Input, InputAdornment, InputLabel, Toolbar,
-    Typography, Snackbar
+    Typography
 } from "material-ui";
 import {AccountCircle, Email, Lock, PermIdentity} from "material-ui-icons";
 const styles = theme => ({
@@ -39,20 +39,13 @@ class Register extends React.Component {
             justify: 'center',
             alignItems: 'center',
             submitted: false,
-            open: true,
 
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-    static contextTypes = {
-        router: PropTypes.object
-    };
 
-    navigate = (path) => {
-        this.context.router.history.push(path);
-    };
 
     handleChange = event => {
         const { name, value } = event.target;
@@ -71,14 +64,14 @@ class Register extends React.Component {
         this.setState({ submitted: true});
         const {user} = this.state;
         const {dispatch} = this.props;
-        if(user.confirmPassword == user.password){
+        if(user.confirmPassword === user.password){
             dispatch(userActions.register(user));
         }
     }
 
     render() {
-        const { classes, register } = this.props;
-        const { alignItems, direction, justify, user, open } = this.state;
+        const { classes } = this.props;
+        const { alignItems, direction, justify, user, } = this.state;
         return (
             <Grid container className={classes.root}>
                 <Grid item xs={12}>
@@ -223,20 +216,7 @@ class Register extends React.Component {
                                         <Button  type="submit" size="small" color="primary" >
                                             Submit
                                         </Button>
-                                      { register.registered &&
 
-                                        <Snackbar
-                                            anchorOrigin={{vertical:'bottom', horizontal:'center'}}
-                                            open={open}
-                                            onClose={() => {
-                                                this.setState({open: false});
-                                                this.navigate("/login");
-                                            }}
-                                            autoHideDuration={2000}
-                                            message={<span> Register Success </span>}
-                                            />
-
-                                      }
                                     </CardActions>
                                 </form>
                             </Card>

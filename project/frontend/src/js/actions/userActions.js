@@ -1,13 +1,15 @@
 /* global console */
 
 import {userConstants} from '../constants'
+import {alertActions} from './alertActions'
 
 import { userApi } from '../api/index';
 // import {history} from '../../router/history';
-
+import {push} from "react-router-redux";
 export const userActions ={
   register,
-  login
+  login,
+  logout,
 };
 
 function register(user_){
@@ -27,11 +29,15 @@ function register(user_){
       .then(
         () =>{
           dispatch(success());
-          // history.push("/login");
+          dispatch(alertActions.success("Register Success"));
+
 
         },
         error => {
-          console.log(error);
+          for (let i in error.data){
+            dispatch(alertActions.error(error.data[i]));
+          }
+
         }
       )
   };
@@ -51,12 +57,20 @@ function login(username, password){
       .then(
         user =>{
           dispatch(success(Object.assign({}, user.data, {"username":username})));
+          dispatch(push("/"));
+          dispatch(alertActions.success("Login Success"));
 
         },
         error => {
-          console.log(error);
+          for (let i in error.data){
+            console.log(error.data[i])
+          }
         }
       )
   };
 
+}
+
+function logout(){
+  return {type: userConstants.LOGOUT, }
 }

@@ -11,6 +11,8 @@ export function login(state={}, action){
           user: action.user,
         }
         );
+    case userConstants.LOGOUT:
+      return {};
     default:
       return state;
   }
