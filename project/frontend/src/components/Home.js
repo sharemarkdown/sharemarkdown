@@ -1,11 +1,13 @@
-/* global console */
 
 import React from "react";
-import {Card, CardContent, Grid, Typography, List, ListItem, ListItemText} from "material-ui";
+import {Card, Grid, Typography, List, ListItem, ListItemText, Divider} from "material-ui";
 import PropTypes from "prop-types";
 import {withStyles} from "material-ui/styles";
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import {withRouter} from 'react-router-dom';
+// import {history} from '../router/history';
+import {push} from 'react-router-redux';
 
 const styles = theme => ({
   root: {
@@ -21,18 +23,15 @@ const styles = theme => ({
 
 
 class Home extends React.Component {
-    static contextTypes = {
-      router: PropTypes.object
-    };
+    // static contextTypes = {
+    //   router: PropTypes.object
+    // };
     state = {
       dense: false,
       secondary: true,
     };
     navigate = (path) => {
-      this.context.router.history.push({
-        pathname: path,
-        state: "HI",
-        });
+      this.props.dispatch(push(path));
     };
 
 
@@ -40,7 +39,6 @@ class Home extends React.Component {
       const {classes, login } = this.props;
       const {dense, secondary} = this.state;
       const titles = ["File 1", "README", "TODO"];
-      console.log(login);
       return (
         <div className={classes.root}>
           <Grid container spacing={24} justify={'center'}>
@@ -60,13 +58,16 @@ class Home extends React.Component {
                   <div className={classes.demo}>
                     <List dense={dense}>
                       {titles.map(value=> (
-                        <ListItem button key={`item-${value}`} onClick={()=>this.navigate('/second')}>
-                          <ListItemText
-                            name="name"
-                            primary={`${value}`}
-                            secondary={secondary ? 'Secondary text' : null}
-                          />
-                        </ListItem>
+                        <div key={`item-${value}`}>
+                          <ListItem button  onClick={()=>this.navigate('/second')}>
+                            <ListItemText
+                              name="name"
+                              primary={`${value}`}
+                              secondary={secondary ? 'Secondary text' : null}
+                            />
+                          </ListItem>
+                          <Divider />
+                        </div>
 
                       ))}
                     </List>
@@ -75,12 +76,6 @@ class Home extends React.Component {
               }
             </Grid>
             <Card>
-              <CardContent>
-                <img src={'https://sayingimages.com/wp-content/uploads/welcome-to-the-team-meme.jpg'}/>
-
-              </CardContent>
-
-
             </Card>
           </Grid>
         </div>
@@ -91,10 +86,17 @@ class Home extends React.Component {
 Home.propTypes = {
   classes: PropTypes.object.isRequired,
   login: PropTypes.object,
+  dispatch: PropTypes.func,
 };
 
 function mapStateToProps(state){
   return state;
 }
 
-export default compose(withStyles(styles), connect(mapStateToProps))(Home);
+function mapDispatchToProps(dispatch) {
+  return {
+    dispatch,
+  };
+}
+
+export default compose(withRouter, withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(Home);
