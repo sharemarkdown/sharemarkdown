@@ -13,7 +13,7 @@ from rest_framework.authtoken.models import Token
 
 class Folder(models.Model):
     parent_folder = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
-    name = models.CharField(max_length=30)
+    folder_name = models.CharField(max_length=30)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
