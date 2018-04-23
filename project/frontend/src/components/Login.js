@@ -88,6 +88,7 @@ class Login extends React.Component {
                                             <FormControl fullWidth className={classes.margin} required>
                                                 <InputLabel htmlFor="username">Username</InputLabel>
                                                 <Input
+                                                    autoFocus
                                                     id='username'
                                                     name='username'
                                                     value={this.state.username}

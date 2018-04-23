@@ -2,6 +2,7 @@
 
 import {userConstants} from '../constants'
 import {alertActions} from './alertActions'
+import {documentActions} from './documentActions'
 
 import { userApi } from '../api/index';
 // import {history} from '../../router/history';
@@ -72,5 +73,11 @@ function login(username, password){
 }
 
 function logout(){
-  return {type: userConstants.LOGOUT, }
+  function logout(){ return {type: userConstants.LOGOUT,}}
+
+  return dispatch => {
+     dispatch(alertActions.clear());
+     dispatch(documentActions.clear_documents());
+     dispatch(logout());
+  }
 }
