@@ -10,10 +10,11 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
+
 class Folder(models.Model):
     parent_folder = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=30)
-    owner = User()
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Document(models.Model):
@@ -21,7 +22,7 @@ class Document(models.Model):
     file_name = models.CharField(max_length=30)
     public = models.BooleanField(default=False)
     content = models.TextField(default='')
-    parent_folder = models.ForeignKey(Folder, on_delete=models.CASCADE)
+    parent_folder = models.ForeignKey(Folder, on_delete=models.CASCADE, null=True)
     viewers = models.ManyToManyField(User, through='ViewRight', related_name='can_be_viewed_by')
     editors = models.ManyToManyField(User, through='EditRight', related_name='can_be_edited_by')
 
