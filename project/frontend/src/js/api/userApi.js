@@ -9,7 +9,7 @@ export const userApi ={
 
 function register(user){
   return new Promise((resolve, reject) => {
-    axios.post('/sharemarkdown/api/register/', user)
+    axios.post('/sharemarkdown/api/register', user)
       .then( response => {
         resolve(response)
       })
@@ -22,7 +22,7 @@ function register(user){
 
 function login(user){
   return new Promise((resolve, reject) =>{
-    axios.post('/sharemarkdown/api/login/', user)
+    axios.post('/sharemarkdown/api/login', user)
       .then( response => {
         resolve(response)
       })

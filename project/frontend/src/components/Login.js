@@ -1,11 +1,11 @@
-
+// /* global console */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
 import {
     AppBar, Button, Card, CardActions, FormControl, Input, InputAdornment, InputLabel, Toolbar,
-    Typography
+    Typography, FormHelperText
 } from "material-ui";
 import {AccountCircle, Lock} from "material-ui-icons";
 import { connect } from 'react-redux';
@@ -31,6 +31,8 @@ class Login extends React.Component {
             alignItems: 'center',
             username: '',
             password: '',
+            username_error: '',
+            password_error: '',
 
         };
         this.handleChange = this.handleChange.bind(this);
@@ -44,12 +46,21 @@ class Login extends React.Component {
     };
 
     handleSubmit(event){
+        this.setState({password_error: false})
+        this.setState({username_error: false})
         event.preventDefault();
 
         const {username, password} = this.state;
         const {dispatch} = this.props;
-
-        dispatch(userActions.login(username, password));
+        if(password === ""){
+            this.setState({password_error: "Please enter password"});
+        }
+       if(username === ""){
+            this.setState(({username_error: "Please enter username"}));
+        }
+        if(username !== "" && password !== "") {
+          dispatch(userActions.login(username, password));
+        }
 
     }
 
@@ -85,38 +96,42 @@ class Login extends React.Component {
 
 
                                         <Grid item xs={10}>
-                                            <FormControl fullWidth className={classes.margin} required>
-                                                <InputLabel htmlFor="username">Username</InputLabel>
-                                                <Input
-                                                    id='username'
-                                                    name='username'
-                                                    value={this.state.username}
-                                                    onChange={this.handleChange}
-                                                    startAdornment={
-                                                        <InputAdornment position="start">
-                                                            <AccountCircle />
-                                                        </InputAdornment>
-                                                    }
-                                                />
-                                            </FormControl>
+
+                                          <FormControl fullWidth className={classes.margin} error={this.state.username_error} aria-describedby="name-error-text">
+                                            <InputLabel htmlFor="username">Username *</InputLabel>
+                                            <Input
+                                              autoFocus
+                                              id='username'
+                                              name='username'
+                                              value={this.state.username}
+                                              onChange={this.handleChange}
+                                              startAdornment={
+                                                <InputAdornment position="start">
+                                                  <AccountCircle/>
+                                                </InputAdornment>
+                                              }
+                                            />
+                                            <FormHelperText id="name-error-text">{this.state.username_error}</FormHelperText>
+                                          </FormControl>
                                         </Grid>
 
                                         <Grid item xs={10}>
-                                            <FormControl fullWidth className={classes.margin} required>
-                                                <InputLabel htmlFor="password">Password</InputLabel>
-                                                <Input
-                                                    id='password'
-                                                    name='password'
-                                                    type='password'
-                                                    value={this.state.password}
-                                                    onChange={this.handleChange}
-                                                    startAdornment={
-                                                        <InputAdornment position="start">
-                                                            <Lock />
-                                                        </InputAdornment>
-                                                    }
-                                                />
-                                            </FormControl>
+                                          <FormControl fullWidth className={classes.margin}  error={this.state.password_error} aria-describedby="name-error-text">
+                                            <InputLabel htmlFor="password">Password *</InputLabel>
+                                            <Input
+                                              id='password'
+                                              name='password'
+                                              type='password'
+                                              value={this.state.password}
+                                              onChange={this.handleChange}
+                                              startAdornment={
+                                                <InputAdornment position="start">
+                                                  <Lock/>
+                                                </InputAdornment>
+                                              }
+                                            />
+                                            <FormHelperText id="name-error-text">{this.state.password_error}</FormHelperText>
+                                          </FormControl>
                                         </Grid>
 
 

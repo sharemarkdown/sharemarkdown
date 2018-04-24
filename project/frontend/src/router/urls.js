@@ -4,7 +4,7 @@ import { Switch, Route } from "react-router-dom";
 
 import Home from "../components/Home";
 import Register from "../components/Register";
-import Second from "../components/Second";
+import Second from "../components/EditPage";
 import Third from "../components/Third";
 import Login from "../components/Login";
 
