@@ -2,7 +2,10 @@
 import React from "react";
 import {Card, Grid, Typography, List, ListItem, ListItemText, Divider, Button,
         Dialog, DialogTitle, DialogContent, TextField, DialogActions,
-        ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails} from "material-ui";
+        ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Icon,
+       } from "material-ui";
+import {ExpandMore} from "material-ui-icons";
+
 import PropTypes from "prop-types";
 import {withStyles} from "material-ui/styles";
 import { connect } from 'react-redux'
@@ -24,6 +27,9 @@ const styles = theme => ({
   },
   title: {
     margin: `${theme.spacing.unit * 4}px 0 ${theme.spacing.unit * 2}px`,
+  },
+  btn: {
+    margin: `${theme.spacing.unit * 2}px 0 ${theme.spacing.unit * 1}px`,
   },
 });
 
@@ -92,11 +98,19 @@ class Home extends React.Component {
               }
               {documents.documents &&
                 <div>
-                  <Typography variant="title" className={classes.title}>
-                    Files of {login.user.username}
-                  </Typography>
-                  <Button color="primary" className="float-right" onClick={this.handleOpenDialog}>New Document</Button>
-
+                  <Grid container spacing={24} alignItems="flex-end">
+                    <Grid item xs={24}>
+                      <Typography variant="title" className={classes.title}>
+                        Files of {login.user.username}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={24}>
+                      <Button color="primary" className={classes.btn} onClick={this.handleOpenDialog}>New Folder</Button>
+                    </Grid>
+                    <Grid item xs={24}>
+                      <Button color="primary" className={classes.btn} onClick={this.handleOpenDialog}>New Document</Button>
+                    </Grid>
+                  </Grid>
 
                     <Dialog
                       open={this.state.open_dialog}
@@ -133,8 +147,20 @@ class Home extends React.Component {
 
                   <div className={classes.demo}>
                     <ExpansionPanel>
-                      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography className={classes.heading}>Expansion Panel 1</Typography>
+                      <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+                        <Grid container spacing={8} alignItems="flex-end">
+                          <Grid item>
+                            <Icon style={{fontSize: 20}}>
+                              folder
+                            </Icon>
+                          </Grid>
+                          <Grid item >
+                            <Typography style={{fontSize: 19}}>
+                              Expansion Panel 1
+                            </Typography>
+                          </Grid>
+                        </Grid>
+
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
                         <Typography>

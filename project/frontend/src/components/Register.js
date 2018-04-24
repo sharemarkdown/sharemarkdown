@@ -1,4 +1,4 @@
-
+// /* global console */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
@@ -6,10 +6,9 @@ import Grid from 'material-ui/Grid';
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { userActions } from "../js/actions/userActions";
-
 import {
     AppBar, Button, Card, CardActions, FormControl, Input, InputAdornment, InputLabel, Toolbar,
-    Typography
+    Typography, FormHelperText
 } from "material-ui";
 import {AccountCircle, Email, Lock, PermIdentity} from "material-ui-icons";
 const styles = theme => ({
@@ -39,6 +38,8 @@ class Register extends React.Component {
             justify: 'center',
             alignItems: 'center',
             submitted: false,
+            password_error: '',
+            email_error: '',
 
         };
 
@@ -59,13 +60,28 @@ class Register extends React.Component {
     };
 
     handleSubmit(event){
+        this.setState({password_error: ''})
+        this.setState({email_error: ''})
+
         event.preventDefault();
 
         this.setState({ submitted: true});
         const {user} = this.state;
         const {dispatch} = this.props;
-        if(user.confirmPassword === user.password){
-            dispatch(userActions.register(user));
+        const validEmail = user.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+        const equalPassword = user.confirmPassword === user.password;
+        const longPassword = user.password.length > 6;
+        if(!equalPassword){
+            this.setState({password_error: 'Password doesnt match'})
+        }else if(!longPassword){
+            this.setState({password_error: 'Password too short'})
+        }
+        if(!validEmail){
+          this.setState({email_error: 'hi'})
+
+        }
+        if(equalPassword && longPassword && validEmail){
+          dispatch(userActions.register(user));
         }
     }
 
@@ -156,61 +172,129 @@ class Register extends React.Component {
                                             </FormControl>
                                         </Grid>
 
-                                        <Grid item xs={10}>
-                                            <FormControl fullWidth className={classes.margin} required>
-                                                <InputLabel htmlFor="password">Password</InputLabel>
-                                                <Input
-                                                    id="password"
-                                                    name="password"
-                                                    type="password"
-                                                    value={user.password}
-                                                    onChange={this.handleChange}
-                                                    startAdornment={
-                                                        <InputAdornment position="start">
-                                                            <Lock />
-                                                        </InputAdornment>
-                                                    }
-                                                />
-                                            </FormControl>
-                                        </Grid>
+                                      {this.state.password_error === '' &&
+                                      <Grid item xs={10}>
+                                        <FormControl fullWidth className={classes.margin} required>
+                                          <InputLabel htmlFor="password">Password</InputLabel>
+                                          <Input
+                                            id="password"
+                                            name="password"
+                                            type="password"
+                                            value={user.password}
+                                            onChange={this.handleChange}
+                                            startAdornment={
+                                              <InputAdornment position="start">
+                                                <Lock/>
+                                              </InputAdornment>
+                                            }
+                                          />
+                                        </FormControl>
+                                      </Grid>
+                                      }
+                                      {this.state.password_error !== '' &&
+                                      <Grid item xs={10}>
+                                        <FormControl fullWidth className={classes.margin} required error aria-describedby="name-error-text">
+                                          <InputLabel htmlFor="password">Password</InputLabel>
+                                          <Input
+                                            id="password"
+                                            name="password"
+                                            type="password"
+                                            value={user.password}
+                                            onChange={this.handleChange}
+                                            startAdornment={
+                                              <InputAdornment position="start">
+                                                <Lock/>
+                                              </InputAdornment>
+                                            }
+                                          />
+                                          <FormHelperText id="name-error-text">{this.state.password_error}</FormHelperText>
+                                        </FormControl>
+                                      </Grid>
+                                      }
 
+                                      {this.state.password_error === '' &&
+                                      <Grid item xs={10}>
+                                        <FormControl fullWidth className={classes.margin} required>
+                                          <InputLabel htmlFor="confirmPassword">Confirm Password</InputLabel>
+                                          <Input
+                                            id="confirmPassword"
+                                            type="password"
+                                            name="confirmPassword"
+                                            value={user.confirmPassword}
+                                            onChange={this.handleChange}
+                                            startAdornment={
+                                              <InputAdornment position="start">
+                                                <Lock/>
+                                              </InputAdornment>
+                                            }
+                                          />
+                                        </FormControl>
+                                      </Grid>
+                                      }
+                                      {this.state.password_error !== '' &&
+                                      <Grid item xs={10}>
+                                        <FormControl fullWidth className={classes.margin} required error
+                                                     aria-describedby="name-error-text">
+                                          <InputLabel htmlFor="confirmPassword">Confirm Password</InputLabel>
+                                          <Input
+                                            id="confirmPassword"
+                                            type="password"
+                                            name="confirmPassword"
+                                            value={user.confirmPassword}
+                                            onChange={this.handleChange}
+                                            startAdornment={
+                                              <InputAdornment position="start">
+                                                <Lock/>
+                                              </InputAdornment>
+                                            }
+                                          />
+                                          <FormHelperText id="name-error-text">{this.state.password_error}</FormHelperText>
+                                        </FormControl>
+                                      </Grid>
+                                      }
+                                      {this.state.email_error === '' &&
+                                      <Grid item xs={10}>
+                                        <FormControl fullWidth className={classes.margin} required>
+                                          <InputLabel htmlFor="email">Email</InputLabel>
+                                          <Input
+                                            id="email"
+                                            name="email"
+                                            value={user.email}
+                                            onChange={this.handleChange}
+                                            startAdornment={
+                                              <InputAdornment position="start">
+                                                <Email/>
+                                              </InputAdornment>
+                                            }
+                                          />
 
+                                        </FormControl>
+                                      </Grid>
+                                      }
+                                      {this.state.email_error !== '' &&
+                                      <Grid item xs={10}>
+                                        <FormControl fullWidth className={classes.margin} required error
+                                                     aria-describedby="name-error-text">
+                                          <InputLabel htmlFor="email">Email</InputLabel>
+                                          <Input
+                                            id="email"
+                                            name="email"
+                                            value={user.email}
+                                            onChange={this.handleChange}
+                                            startAdornment={
+                                              <InputAdornment position="start">
+                                                <Email/>
+                                              </InputAdornment>
+                                            }
+                                          />
+                                          <FormHelperText id="name-error-text">Invalid Email</FormHelperText>
+                                        </FormControl>
 
-                                        <Grid item xs={10}>
-                                            <FormControl fullWidth className={classes.margin} required>
-                                                <InputLabel htmlFor="confirmPassword">Confirm Password</InputLabel>
-                                                <Input
-                                                    id="confirmPassword"
-                                                    type="password"
-                                                    name="confirmPassword"
-                                                    value={user.confirmPassword}
-                                                    onChange={this.handleChange}
-                                                    startAdornment={
-                                                        <InputAdornment position="start">
-                                                            <Lock />
-                                                        </InputAdornment>
-                                                    }
-                                                />
-                                            </FormControl>
-                                        </Grid>
+                                      </Grid>
+                                      }
 
-                                        <Grid item xs={10}>
-                                            <FormControl fullWidth className={classes.margin} required>
-                                                <InputLabel htmlFor="email">Email</InputLabel>
-                                                <Input
-                                                    id="email"
-                                                    name="email"
-                                                    value={user.email}
-                                                    onChange={this.handleChange}
-                                                    startAdornment={
-                                                        <InputAdornment position="start">
-                                                            <Email />
-                                                        </InputAdornment>
-                                                    }
-                                                />
-                                            </FormControl>
-                                        </Grid>
-                                    </Grid>
+                                      </Grid>
+
 
                                     <CardActions>
                                         <Button  type="submit" size="small" color="primary" >
