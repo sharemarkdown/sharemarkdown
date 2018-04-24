@@ -1,5 +1,4 @@
 
-
 import React from "react";
 import {Card, CardContent, Grid, Typography, TextField} from "material-ui";
 import PropTypes from 'prop-types'
@@ -53,79 +52,83 @@ const styles = theme => ({
 class EditPage extends React.Component {
 
   handleChange = event => {
+    // event.preventDefault();
     const { dispatch, documents} = this.props;
-    dispatch(documentActions.save_content(documents.current_document.id, event.target.value))
+    dispatch(documentActions.save_content(documents.current_document.id, documents.current_document.file_name, event.target.value))
   };
 
   render() {
     const {classes, documents} = this.props;
     return (
-      <Grid container spacing={24} justify={'center'}>
-        <Grid item xs={12}>
-          <Typography variant="title" className={classes.title}>
-            {documents.current_document.title}
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Card>
-            <CardContent>
-              <TextField
-                value={documents.current_document.content}
-                id="textarea"
-                label="Edit"
-                placeholder="Type Here"
-                multiline
-                fullWidth
-                rows="30"
-                InputProps={{
-                  disableUnderline: true,
-                  classes: {
-                    input: classes.textFieldInput,
-                  },
-                }}
-                InputLabelProps={{
-                  shrink: true,
-                  className: classes.textFieldFormLabel,
-                }}
-                onChange={this.handleChange}
-                margin="normal"
-                onKeyPress={(ev) => {
-                  if (ev.key === 'Tab') {
-                    // Do code here
-                    ev.preventDefault();
-                  }
-                }}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Card>
-            <CardContent>
+      <div>
+        { documents.current_document &&
+          <Grid container spacing={24} justify={'center'}>
 
-              <TextField
-                disabled
-                value={documents.current_document.content}
-                id="textarea"
-                label="Output"
-                multiline
-                fullWidth
-                rows="30"
-                InputProps={{
-                  disableUnderline: true,
-                }}
-                InputLabelProps={{
-                  shrink: true,
-                  className: classes.textFieldFormLabel,
-                }}
-                margin="normal"
 
-              />
-            </CardContent>
-          </Card>
-        </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="title" className={classes.title}>
+                    {documents.current_document.file_name}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Card>
+                    <CardContent>
+                      <TextField
+                        value={documents.current_document.content}
+                        id="textarea"
+                        label="Edit"
+                        placeholder="Type Here"
+                        multiline
+                        fullWidth
+                        rows="30"
+                        InputProps={{
+                          disableUnderline: true,
+                          classes: {
+                            input: classes.textFieldInput,
+                          },
+                        }}
+                        InputLabelProps={{
+                          shrink: true,
+                          className: classes.textFieldFormLabel,
+                        }}
+                        onChange={this.handleChange}
+                        margin="normal"
+                      />
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Card>
+                    <CardContent>
 
-      </Grid>
+                      <TextField
+                        disabled
+                        value={documents.current_document.content}
+                        id="textarea"
+                        label="Output"
+                        multiline
+                        fullWidth
+                        rows="30"
+                        InputProps={{
+                          disableUnderline: true,
+                        }}
+                        InputLabelProps={{
+                          shrink: true,
+                          className: classes.textFieldFormLabel,
+                        }}
+                        margin="normal"
+
+                      />
+                    </CardContent>
+                  </Card>
+                </Grid>
+
+
+          </Grid>
+          }
+      </div>
+
+
     );
   }
 }

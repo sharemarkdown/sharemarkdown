@@ -7,6 +7,7 @@ import {withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types'
 import { Snackbar } from "material-ui";
 import {alertActions} from '../js/actions'
+import axios from 'axios/index'
 
 class App extends React.Component{
   constructor(props){
@@ -14,7 +15,10 @@ class App extends React.Component{
 
   }
   render(){
-    const {alert, dispatch} = this.props;
+    const {alert, dispatch, login} = this.props;
+    if(login.user){
+      axios.defaults.headers.common['Authorization'] = "Token " + login.user.token;
+    }
 
     return(
       <div>
@@ -42,12 +46,13 @@ class App extends React.Component{
 App.propTypes = {
   dispatch: PropTypes.func,
   alert: PropTypes.object,
+  login: PropTypes.object,
 };
 
 
 function mapStateToProps(state){
-  const { alert } = state;
-  return { alert };
+  const { alert, login } = state;
+  return { alert, login };
 }
 function mapDispatchToProps(dispatch) {
   return {

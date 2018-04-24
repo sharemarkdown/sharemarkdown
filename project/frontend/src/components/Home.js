@@ -1,20 +1,23 @@
 // /* global console */
 import React from "react";
 import {Card, Grid, Typography, List, ListItem, ListItemText, Divider, Button,
-        Dialog, DialogTitle, DialogContent, TextField, DialogActions} from "material-ui";
+        Dialog, DialogTitle, DialogContent, TextField, DialogActions,
+        ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails} from "material-ui";
 import PropTypes from "prop-types";
 import {withStyles} from "material-ui/styles";
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import {withRouter} from 'react-router-dom';
-// import {history} from '../router/history';
 import {push} from 'react-router-redux';
 import {documentActions} from '../js/actions'
-// import { userActions } from '../js/actions/userActions'
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
+
+  },
+  grid:{
+    backgroundColor: '#DCDCDC',
   },
   demo: {
     backgroundColor: theme.palette.background.paper,
@@ -43,6 +46,7 @@ class Home extends React.Component {
 
     componentWillMount() {
       if(this.props.login.user){
+
         this.props.dispatch(documentActions.get_documents());
       }
     }
@@ -79,14 +83,14 @@ class Home extends React.Component {
       const {dense, secondary} = this.state;
       return (
         <div className={classes.root}>
-          <Grid container spacing={24} justify={'center'}>
+          <Grid container spacing={24} justify={'center'} className={classes.grid}>
             <Grid item xs={12}>
-              {!login.user &&
+              {!documents.documents &&
               <Typography variant="title" className={classes.title}>
                 Please Log in.
               </Typography>
               }
-              {login.user &&
+              {documents.documents &&
                 <div>
                   <Typography variant="title" className={classes.title}>
                     Files of {login.user.username}
@@ -100,44 +104,55 @@ class Home extends React.Component {
                       aria-labelledby="form-dialog-title"
                     >
                       <form onSubmit={this.handleSubmit} >
-                      <DialogTitle id="form-dialog-title">New File</DialogTitle>
-                      <DialogContent>
+                        <DialogTitle id="form-dialog-title">New File</DialogTitle>
+                        <DialogContent>
 
-                        <TextField
-                          value={this.state.title}
-                          autoFocus
-                          margin="dense"
-                          id="title"
-                          name="title"
-                          label="title"
-                          placeholder="File name"
-                          onChange={this.handleChange}
-                          fullWidth
-                        />
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={this.handleCloseDialog} color="primary">
-                          Cancel
-                        </Button>
-                        <Button type="submit" color="primary">
-                          Create
-                        </Button>
-                      </DialogActions>
+                          <TextField
+                            value={this.state.title}
+                            autoFocus
+                            margin="dense"
+                            id="title"
+                            name="title"
+                            label="title"
+                            placeholder="File name"
+                            onChange={this.handleChange}
+                            fullWidth
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={this.handleCloseDialog} color="primary">
+                            Cancel
+                          </Button>
+                          <Button type="submit" color="primary">
+                            Create
+                          </Button>
+                        </DialogActions>
                       </form>
                     </Dialog>
 
 
                   <div className={classes.demo}>
+                    <ExpansionPanel>
+                      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography className={classes.heading}>Expansion Panel 1</Typography>
+                      </ExpansionPanelSummary>
+                      <ExpansionPanelDetails>
+                        <Typography>
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+                          sit amet blandit leo lobortis eget.
+                        </Typography>
+                      </ExpansionPanelDetails>
+                    </ExpansionPanel>
                     <List dense={dense}>
                       {documents.documents.map(value=> (
-                        <div key={`item-${value.title}`}>
+                        <div key={`item-${value.file_name}-${value.id}`}>
                           <ListItem button  onClick={()=>
-                            this.navigate('/second', value)
+                            this.navigate('/second', value.id)
                           }
                           >
                             <ListItemText
                               name="name"
-                              primary={`${value.title}`}
+                              primary={`${value.file_name}`}
                               secondary={secondary ? 'Secondary text' : null}
                             />
                           </ListItem>

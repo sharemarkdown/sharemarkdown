@@ -11,6 +11,7 @@ export function user(state={}, action){
       );
     case userConstants.LOGOUT:
       return {};
+      case user
     default:
       return state;
   }

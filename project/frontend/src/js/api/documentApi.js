@@ -1,8 +1,11 @@
-/* global Promise */
+/* global Promise*/
 
+
+import axios from 'axios/index'
 
 export const documentApi ={
   get_documents,
+  get_document,
   save_content,
   create_document,
   // save_document,
@@ -10,33 +13,53 @@ export const documentApi ={
 
 
 
-const test = [
-  {'id': 0, 'title': "File1", 'content': "File 1 is dklasfjkldsaheuheu lksdajf lkasdjfkl "},
-  {'id': 1, 'title': "README", 'content': "README Cansalkdfj daslkfj sdlkfj sdlkf jklds "},
-]
-
-
 function get_documents(){
-
-  return new Promise((resolve, ) =>{
-    resolve(test);
+  return new Promise((resolve, reject) =>{
+    axios.get('/sharemarkdown/api/documents')
+      .then( response => {
+        resolve(response.data)
+      })
+      .catch( error => {
+        reject(error)
+      })
   })
 
 }
 
-function save_content(id, content){
-  test[id].content = content;
-
-  return new Promise((resolve, ) => {
-    resolve(test[id]);
+function get_document(id){
+  return new Promise((resolve, reject) =>{
+    axios.get('/sharemarkdown/api/document/'+id)
+      .then( response => {
+        resolve(response.data)
+      })
+      .catch( error => {
+        reject(error)
+      })
   })
 
 }
 
-function create_document(title){
-  const id = test.length;
-  test.push({'id': id, 'title': title, 'content': ''})
-  return new Promise((resolve, ) => {
-    resolve(test)
+function save_content(id, file_name, content){
+  return new Promise((resolve, reject) =>{
+    axios.put('/sharemarkdown/api/document/' + id, {"file_name": file_name, "content": content})
+      .then( response => {
+        resolve(response.data)
+      })
+      .catch( error => {
+        reject(error)
+      })
+  })
+
+}
+
+function create_document(file_name){
+  return new Promise((resolve, reject) =>{
+    axios.post('/sharemarkdown/api/documents', {"file_name": file_name, "content": ""})
+      .then( response => {
+        resolve(response.data)
+      })
+      .catch( error => {
+        reject(error)
+      })
   })
 }

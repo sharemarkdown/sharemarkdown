@@ -30,6 +30,7 @@ function register(user_){
       .then(
         () =>{
           dispatch(success());
+          dispatch(push("/login"));
           dispatch(alertActions.success("Register Success"));
 
 
@@ -79,5 +80,6 @@ function logout(){
      dispatch(alertActions.clear());
      dispatch(documentActions.clear_documents());
      dispatch(logout());
+     dispatch(push("/"));
   }
 }
