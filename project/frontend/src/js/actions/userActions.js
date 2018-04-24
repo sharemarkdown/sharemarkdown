@@ -64,9 +64,8 @@ function login(username, password){
 
         },
         error => {
-          for (let i in error.data){
-            console.log(error.data[i])
-          }
+            dispatch(alertActions.error("Login Fail"));
+            console.log(error)
         }
       )
   };

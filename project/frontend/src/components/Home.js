@@ -156,7 +156,7 @@ class Home extends React.Component {
                           </Grid>
                           <Grid item >
                             <Typography style={{fontSize: 19}}>
-                              Expansion Panel 1
+                              Folder1
                             </Typography>
                           </Grid>
                         </Grid>
@@ -164,8 +164,7 @@ class Home extends React.Component {
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
                         <Typography>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                          sit amet blandit leo lobortis eget.
+                          Files in folder 1
                         </Typography>
                       </ExpansionPanelDetails>
                     </ExpansionPanel>

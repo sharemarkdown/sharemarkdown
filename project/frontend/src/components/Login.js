@@ -46,18 +46,17 @@ class Login extends React.Component {
     };
 
     handleSubmit(event){
-        this.setState({password_error: ''})
-        this.setState({username_error: ''})
+        this.setState({password_error: false})
+        this.setState({username_error: false})
         event.preventDefault();
 
         const {username, password} = this.state;
         const {dispatch} = this.props;
         if(password === ""){
-
-            this.setState({password_error: "hi"});
+            this.setState({password_error: "Please enter password"});
         }
        if(username === ""){
-            this.setState(({username_error: "HI"}));
+            this.setState(({username_error: "Please enter username"}));
         }
         if(username !== "" && password !== "") {
           dispatch(userActions.login(username, password));
@@ -97,27 +96,9 @@ class Login extends React.Component {
 
 
                                         <Grid item xs={10}>
-                                          {this.state.username_error === '' &&
-                                          <FormControl fullWidth className={classes.margin} >
-                                            <InputLabel htmlFor="username">Username</InputLabel>
-                                            <Input
-                                              autoFocus
-                                              id='username'
-                                              name='username'
-                                              value={this.state.username}
-                                              onChange={this.handleChange}
-                                              startAdornment={
-                                                <InputAdornment position="start">
-                                                  <AccountCircle/>
-                                                </InputAdornment>
-                                              }
-                                            />
 
-                                          </FormControl>
-                                          }
-                                          {this.state.username_error !== '' &&
-                                          <FormControl fullWidth className={classes.margin} error aria-describedby="name-error-text">
-                                            <InputLabel htmlFor="username">Username</InputLabel>
+                                          <FormControl fullWidth className={classes.margin} error={this.state.username_error} aria-describedby="name-error-text">
+                                            <InputLabel htmlFor="username">Username *</InputLabel>
                                             <Input
                                               autoFocus
                                               id='username'
@@ -130,33 +111,13 @@ class Login extends React.Component {
                                                 </InputAdornment>
                                               }
                                             />
-                                            <FormHelperText id="name-error-text">Please Enter Username</FormHelperText>
+                                            <FormHelperText id="name-error-text">{this.state.username_error}</FormHelperText>
                                           </FormControl>
-                                          }
                                         </Grid>
 
                                         <Grid item xs={10}>
-                                          {this.state.password_error === '' &&
-                                              <FormControl fullWidth className={classes.margin} >
-                                                <InputLabel htmlFor="password">Password</InputLabel>
-                                                <Input
-                                                  id='password'
-                                                  name='password'
-                                                  type='password'
-                                                  value={this.state.password}
-                                                  onChange={this.handleChange}
-                                                  startAdornment={
-                                                    <InputAdornment position="start">
-                                                      <Lock/>
-                                                    </InputAdornment>
-                                                  }
-                                                />
-
-                                              </FormControl>
-                                          }
-                                          {this.state.password_error !== '' &&
-                                          <FormControl fullWidth className={classes.margin}  error aria-describedby="name-error-text">
-                                            <InputLabel htmlFor="password">Password</InputLabel>
+                                          <FormControl fullWidth className={classes.margin}  error={this.state.password_error} aria-describedby="name-error-text">
+                                            <InputLabel htmlFor="password">Password *</InputLabel>
                                             <Input
                                               id='password'
                                               name='password'
@@ -169,9 +130,8 @@ class Login extends React.Component {
                                                 </InputAdornment>
                                               }
                                             />
-                                            <FormHelperText id="name-error-text">Please Enter Password</FormHelperText>
+                                            <FormHelperText id="name-error-text">{this.state.password_error}</FormHelperText>
                                           </FormControl>
-                                          }
                                         </Grid>
 
 

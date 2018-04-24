@@ -34,12 +34,18 @@ class Register extends React.Component {
               confirmPassword: '',
               email: ''
             },
+            error: {
+                firstName: false,
+                lastName: false,
+                username: false,
+                password: false,
+                confirmPassword: false,
+                email: false
+            },
             direction: 'row',
             justify: 'center',
             alignItems: 'center',
             submitted: false,
-            password_error: '',
-            email_error: '',
 
         };
 
@@ -60,8 +66,7 @@ class Register extends React.Component {
     };
 
     handleSubmit(event){
-        this.setState({password_error: ''})
-        this.setState({email_error: ''})
+        this.setState({error: {}});
 
         event.preventDefault();
 
@@ -72,12 +77,12 @@ class Register extends React.Component {
         const equalPassword = user.confirmPassword === user.password;
         const longPassword = user.password.length > 6;
         if(!equalPassword){
-            this.setState({password_error: 'Password doesnt match'})
+            this.setState({error: {...this.state.error, password: 'Password does not match'} })
         }else if(!longPassword){
-            this.setState({password_error: 'Password too short'})
+            this.setState({error: {...this.state.error, password: 'Password too short'} })
         }
         if(!validEmail){
-          this.setState({email_error: 'hi'})
+          this.setState({error: {...this.state.error, email: 'Invalid email'} })
 
         }
         if(equalPassword && longPassword && validEmail){
@@ -97,7 +102,7 @@ class Register extends React.Component {
                         alignItems={alignItems}
                         direction={direction}
                         justify={justify}
-                        style={{height: 500}}
+                        style={{height: 700}}
                     >
                         <Grid item xs={3}>
                             <Card>
@@ -133,6 +138,7 @@ class Register extends React.Component {
                                                                 </InputAdornment>
                                                             }
                                                         />
+                                                        <FormHelperText id="name-error-text">{this.state.error.firstName}</FormHelperText>
                                                     </FormControl>
                                                 </Grid>
                                                 <Grid item xs={6}>
@@ -149,6 +155,7 @@ class Register extends React.Component {
                                                                 </InputAdornment>
                                                             }
                                                         />
+                                                        <FormHelperText id="name-error-text">{this.state.error.lastName}</FormHelperText>
                                                     </FormControl>
                                                 </Grid>
                                             </Grid>
@@ -169,58 +176,19 @@ class Register extends React.Component {
                                                         </InputAdornment>
                                                     }
                                                 />
+                                                <FormHelperText id="name-error-text">{this.state.error.username}</FormHelperText>
                                             </FormControl>
                                         </Grid>
 
-                                      {this.state.password_error === '' &&
-                                      <Grid item xs={10}>
-                                        <FormControl fullWidth className={classes.margin} required>
-                                          <InputLabel htmlFor="password">Password</InputLabel>
-                                          <Input
-                                            id="password"
-                                            name="password"
-                                            type="password"
-                                            value={user.password}
-                                            onChange={this.handleChange}
-                                            startAdornment={
-                                              <InputAdornment position="start">
-                                                <Lock/>
-                                              </InputAdornment>
-                                            }
-                                          />
-                                        </FormControl>
-                                      </Grid>
-                                      }
-                                      {this.state.password_error !== '' &&
-                                      <Grid item xs={10}>
-                                        <FormControl fullWidth className={classes.margin} required error aria-describedby="name-error-text">
-                                          <InputLabel htmlFor="password">Password</InputLabel>
-                                          <Input
-                                            id="password"
-                                            name="password"
-                                            type="password"
-                                            value={user.password}
-                                            onChange={this.handleChange}
-                                            startAdornment={
-                                              <InputAdornment position="start">
-                                                <Lock/>
-                                              </InputAdornment>
-                                            }
-                                          />
-                                          <FormHelperText id="name-error-text">{this.state.password_error}</FormHelperText>
-                                        </FormControl>
-                                      </Grid>
-                                      }
 
-                                      {this.state.password_error === '' &&
                                       <Grid item xs={10}>
-                                        <FormControl fullWidth className={classes.margin} required>
-                                          <InputLabel htmlFor="confirmPassword">Confirm Password</InputLabel>
+                                        <FormControl fullWidth className={classes.margin} required error={this.state.error.password} aria-describedby="name-error-text">
+                                          <InputLabel htmlFor="password">Password</InputLabel>
                                           <Input
-                                            id="confirmPassword"
+                                            id="password"
+                                            name="password"
                                             type="password"
-                                            name="confirmPassword"
-                                            value={user.confirmPassword}
+                                            value={user.password}
                                             onChange={this.handleChange}
                                             startAdornment={
                                               <InputAdornment position="start">
@@ -228,12 +196,15 @@ class Register extends React.Component {
                                               </InputAdornment>
                                             }
                                           />
+                                          <FormHelperText id="name-error-text">{this.state.error.password}</FormHelperText>
                                         </FormControl>
                                       </Grid>
-                                      }
-                                      {this.state.password_error !== '' &&
+
+
+
+
                                       <Grid item xs={10}>
-                                        <FormControl fullWidth className={classes.margin} required error
+                                        <FormControl fullWidth className={classes.margin} required error={this.state.error.password}
                                                      aria-describedby="name-error-text">
                                           <InputLabel htmlFor="confirmPassword">Confirm Password</InputLabel>
                                           <Input
@@ -251,29 +222,10 @@ class Register extends React.Component {
                                           <FormHelperText id="name-error-text">{this.state.password_error}</FormHelperText>
                                         </FormControl>
                                       </Grid>
-                                      }
-                                      {this.state.email_error === '' &&
-                                      <Grid item xs={10}>
-                                        <FormControl fullWidth className={classes.margin} required>
-                                          <InputLabel htmlFor="email">Email</InputLabel>
-                                          <Input
-                                            id="email"
-                                            name="email"
-                                            value={user.email}
-                                            onChange={this.handleChange}
-                                            startAdornment={
-                                              <InputAdornment position="start">
-                                                <Email/>
-                                              </InputAdornment>
-                                            }
-                                          />
 
-                                        </FormControl>
-                                      </Grid>
-                                      }
-                                      {this.state.email_error !== '' &&
+
                                       <Grid item xs={10}>
-                                        <FormControl fullWidth className={classes.margin} required error
+                                        <FormControl fullWidth className={classes.margin} required error={this.state.error.email}
                                                      aria-describedby="name-error-text">
                                           <InputLabel htmlFor="email">Email</InputLabel>
                                           <Input
@@ -287,11 +239,10 @@ class Register extends React.Component {
                                               </InputAdornment>
                                             }
                                           />
-                                          <FormHelperText id="name-error-text">Invalid Email</FormHelperText>
+                                          <FormHelperText id="name-error-text">{this.state.error.email}</FormHelperText>
                                         </FormControl>
 
                                       </Grid>
-                                      }
 
                                       </Grid>
 
