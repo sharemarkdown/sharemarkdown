@@ -37,8 +37,6 @@ class GetUpdateDeleteFolder(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         obj = get_object_or_404(Folder, **self.kwargs)
-        print(obj.owner.id)
-        print(self.request.user.id)
         if obj.owner.id != self.request.user.id:
             raise PermissionDenied(
                 detail='You do not have permission')
