@@ -1,11 +1,11 @@
-// /* global console */
+/* global console */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
 import {
     AppBar, Button, Card, CardActions, FormControl, Input, InputAdornment, InputLabel, Toolbar,
-    Typography, FormHelperText
+    Typography, FormHelperText, LinearProgress
 } from "material-ui";
 import {AccountCircle, Lock} from "material-ui-icons";
 import { connect } from 'react-redux';
@@ -31,8 +31,8 @@ class Login extends React.Component {
             alignItems: 'center',
             username: '',
             password: '',
-            username_error: '',
-            password_error: '',
+            username_error: false,
+            password_error: false,
 
         };
         this.handleChange = this.handleChange.bind(this);
@@ -52,6 +52,7 @@ class Login extends React.Component {
 
         const {username, password} = this.state;
         const {dispatch} = this.props;
+        console.log(this.props);
         if(password === ""){
             this.setState({password_error: "Please enter password"});
         }
@@ -143,6 +144,11 @@ class Login extends React.Component {
 
                                     </CardActions>
                                 </form>
+                                { this.props.login.login.logging_in &&
+                                    (
+                                        <LinearProgress />
+                                    )
+                                }
                             </Card>
 
                         </Grid>
