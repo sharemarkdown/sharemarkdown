@@ -33,13 +33,13 @@ function register(user_){
           dispatch(push("/login"));
           dispatch(alertActions.success("Register Success"));
 
-
         },
         error => {
-          for (let i in error.data){
-            dispatch(alertActions.error(error.data[i]));
-          }
-
+            var msg = 'Register Fail';
+            if (error.response.data['username']) {
+                msg = error.response.data['username']
+            }
+            dispatch(alertActions.error(msg));
         }
       )
   };
