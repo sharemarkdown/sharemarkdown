@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from sharemarkdown.models import Folder, Document, EditRight
+from sharemarkdown.models import Folder, Document, EditRight, ViewRight
 from django.contrib.auth.models import User
 
 
@@ -29,9 +29,14 @@ class DocumentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         doc = Document.objects.create(**validated_data)
         EditRight.objects.create(user=validated_data['owner'], document=doc)
+        ViewRight.objects.create(user=validated_data['owner'], document=doc)
         return doc
 
     class Meta:
         model = Document
         fields = '__all__'
 
+class EditRightSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EditRight
+        fields = '__all__'
