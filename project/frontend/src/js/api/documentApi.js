@@ -8,6 +8,9 @@ export const documentApi ={
   get_document,
   save_content,
   create_document,
+  share_document,
+  get_files,
+  delete_document,
   // save_document,
 };
 
@@ -15,7 +18,19 @@ export const documentApi ={
 
 function get_documents(){
   return new Promise((resolve, reject) =>{
-    axios.get('/sharemarkdown/api/documents')
+    axios.get('/sharemarkdown/api/files')
+      .then( response => {
+        resolve(response.data)
+      })
+      .catch( error => {
+        reject(error)
+      })
+  })
+
+}
+function get_files(id){
+  return new Promise((resolve, reject) =>{
+    axios.get('/sharemarkdown/api/files/' + id)
       .then( response => {
         resolve(response.data)
       })
@@ -28,7 +43,7 @@ function get_documents(){
 
 function get_document(id){
   return new Promise((resolve, reject) =>{
-    axios.get('/sharemarkdown/api/document/'+id)
+    axios.get('/sharemarkdown/api/file/'+id)
       .then( response => {
         resolve(response.data)
       })
@@ -52,11 +67,38 @@ function save_content(id, file_name, content){
 
 }
 
-function create_document(file_name){
+function create_document(file_name, folder_id){
   return new Promise((resolve, reject) =>{
-    axios.post('/sharemarkdown/api/documents', {"file_name": file_name, "content": ""})
+    axios.post('/sharemarkdown/api/documents', {"file_name": file_name, "parent_folder": folder_id})
       .then( response => {
         resolve(response.data)
+      })
+      .catch( error => {
+        reject(error)
+      })
+  })
+}
+
+function share_document(file_id, username){
+  return new Promise((resolve, reject) => {
+    axios.post('/sharemarkdown/api/share/doc',{"document": file_id, "user": username})
+      .then(
+        ()=>{
+          resolve()
+        }
+      )
+      .catch( error => {
+        reject(error)
+      })
+
+  })
+}
+
+function delete_document(id){
+  return new Promise((resolve, reject) => {
+    axios.delete('/sharemarkdown/api/document/'+id)
+      .then( response => {
+        resolve(response)
       })
       .catch( error => {
         reject(error)

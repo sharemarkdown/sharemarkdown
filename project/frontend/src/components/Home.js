@@ -1,10 +1,10 @@
-// /* global console */
+/* global console */
 import React from "react";
-import {Card, Grid, Typography, List, ListItem, ListItemText, Divider, Button,
+import {Card, Grid, Typography, List, ListItem, ListItemText, Button,
         Dialog, DialogTitle, DialogContent, TextField, DialogActions,
-        ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Icon,
+        Icon, ListItemSecondaryAction
        } from "material-ui";
-import {ExpandMore} from "material-ui-icons";
+// import {ExpandMore} from "material-ui-icons";
 
 import PropTypes from "prop-types";
 import {withStyles} from "material-ui/styles";
@@ -13,6 +13,7 @@ import { compose } from 'redux'
 import {withRouter} from 'react-router-dom';
 import {push} from 'react-router-redux';
 import {documentActions} from '../js/actions'
+import { documentConstants } from '../js/constants'
 
 const styles = theme => ({
   root: {
@@ -31,6 +32,14 @@ const styles = theme => ({
   btn: {
     margin: `${theme.spacing.unit * 2}px 0 ${theme.spacing.unit * 1}px`,
   },
+  paper: theme.mixins.gutters({
+    paddingTop: 16,
+    paddingBottom: 16,
+    marginTop: theme.spacing.unit * 3,
+  }),
+  rightIcon:{
+    margin: theme.spacing.unit,
+  },
 });
 
 
@@ -42,18 +51,44 @@ class Home extends React.Component {
       this.state = {
         dense: false,
         secondary: true,
-        open_dialog: false,
+        new_file_dialog_open: false,
         title: "",
+        share_user: "",
+        share_file_id: -1,
       };
       this.handleChange = this.handleChange.bind(this);
-      this.handleSubmit = this.handleSubmit.bind(this);
+      this.handleEditSubmit = this.handleEditSubmit.bind(this);
+      this.handleCloseDialog = this.handleCloseDialog.bind(this);
+      this.handleOpenDialog = this.handleOpenDialog.bind(this);
+      this.handleShareSubmit = this.handleShareSubmit.bind(this);
+
+    }
+    componentWillReceiveProps(nextProps) {
+      console.log("Hiii")
+
+      if(this.props.match.params !== nextProps.match.params){
+        this.props = nextProps;
+        if(this.props.login.user) {
+          if (Object.keys(this.props.match.params).length > 0) {
+            this.props.dispatch(documentActions.get_files(this.props.match.params.id));
+          } else {
+            this.props.dispatch(documentActions.get_documents());
+          }
+        }
+      }
 
     }
 
-    componentWillMount() {
-      if(this.props.login.user){
 
-        this.props.dispatch(documentActions.get_documents());
+    componentDidMount() {
+      console.log(this.props.match.params)
+      console.log(Object.keys(this.props.match.params).length)
+      if(this.props.login.user){
+        if(Object.keys(this.props.match.params).length > 0){
+          this.props.dispatch(documentActions.get_files(this.props.match.params.id));
+        }else {
+          this.props.dispatch(documentActions.get_documents());
+        }
       }
     }
 
@@ -69,18 +104,34 @@ class Home extends React.Component {
     };
 
     handleOpenDialog = () => {
-      this.setState({open_dialog: true});
+      this.props.dispatch({type: documentConstants.CREATE_DOCUMENT_REQUEST,})
     }
     handleCloseDialog = () => {
-      this.setState(({open_dialog: false}));
+      this.props.dispatch({type: documentConstants.CREATE_DOCUMENT_CANCEL,})
+    }
+    handleShareOpenDialog = () => {
+      this.props.dispatch({type: documentConstants.SHARE_DOCUMENT_REQUEST,})
+      this.setState()
+    }
+    handleShareCloseDialog = () => {
+      this.props.dispatch({type: documentConstants.SHARE_DOCUMENT_CANCEL,})
     }
 
-    handleSubmit(event){
+    handleEditSubmit(event){
       event.preventDefault();
       const { dispatch } = this.props;
-      dispatch(documentActions.create_document(this.state.title));
+      dispatch(documentActions.create_document(this.state.title, this.props.match.params.id || null));
       this.handleCloseDialog();
       this.setState({title: "" })
+    }
+
+
+    handleShareSubmit(event){
+      event.preventDefault();
+      const { dispatch } = this.props;
+      dispatch(documentActions.share_document(this.state.share_file_id, this.state.share_user));
+      this.handleShareCloseDialog();
+      this.setState({share_user: "", share_file_id: -1})
     }
 
 
@@ -105,19 +156,27 @@ class Home extends React.Component {
                       </Typography>
                     </Grid>
                     <Grid item xs={24}>
-                      <Button color="primary" className={classes.btn} onClick={this.handleOpenDialog}>New Folder</Button>
+                      <Button color="primary"
+                              className={classes.btn}
+                              name="new_file_dialog_open"
+                              onClick={this.handleOpenDialog}
+                      >
+                        New Folder
+                      </Button>
                     </Grid>
                     <Grid item xs={24}>
-                      <Button color="primary" className={classes.btn} onClick={this.handleOpenDialog}>New Document</Button>
+                      <Button color="primary" className={classes.btn} name="new_file_dialog_open" onClick={this.handleOpenDialog}>New Document</Button>
                     </Grid>
                   </Grid>
 
                     <Dialog
-                      open={this.state.open_dialog}
-                      onClose={this.handleCloseDialog}
+                      open={documents.create_request}
+                      onClose={
+                        this.handleCloseDialog
+                      }
                       aria-labelledby="form-dialog-title"
                     >
-                      <form onSubmit={this.handleSubmit} >
+                      <form onSubmit={this.handleEditSubmit} >
                         <DialogTitle id="form-dialog-title">New File</DialogTitle>
                         <DialogContent>
 
@@ -134,7 +193,7 @@ class Home extends React.Component {
                           />
                         </DialogContent>
                         <DialogActions>
-                          <Button onClick={this.handleCloseDialog} color="primary">
+                          <Button name="new_file_dialog_open" onClick={this.handleCloseDialog} color="primary">
                             Cancel
                           </Button>
                           <Button type="submit" color="primary">
@@ -145,33 +204,78 @@ class Home extends React.Component {
                     </Dialog>
 
 
-                  <div className={classes.demo}>
-                    <ExpansionPanel>
-                      <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-                        <Grid container spacing={8} alignItems="flex-end">
-                          <Grid item>
-                            <Icon style={{fontSize: 20}}>
-                              folder
-                            </Icon>
-                          </Grid>
-                          <Grid item >
-                            <Typography style={{fontSize: 19}}>
-                              Folder1
-                            </Typography>
-                          </Grid>
-                        </Grid>
+                  <Dialog
+                    open={documents.share_request}
+                    onClose={this.handleShareCloseDialog}
+                    aria-labelledby="form-dialog-title"
+                  >
+                    <form onSubmit={this.handleShareSubmit} >
+                      <DialogTitle id="form-dialog-title">Please enter the username:</DialogTitle>
+                      <DialogContent>
 
-                      </ExpansionPanelSummary>
-                      <ExpansionPanelDetails>
-                        <Typography>
-                          Files in folder 1
-                        </Typography>
-                      </ExpansionPanelDetails>
-                    </ExpansionPanel>
+                        <TextField
+                          value={this.state.share_user}
+                          autoFocus
+                          margin="dense"
+                          id="share_user"
+                          name="share_user"
+                          label="share_user"
+                          placeholder="Username"
+                          onChange={this.handleChange}
+                          fullWidth
+                        />
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={this.handleShareCloseDialog} color="primary">
+                          Cancel
+                        </Button>
+                        <Button type="submit" color="primary">
+                          Share
+                        </Button>
+                      </DialogActions>
+                    </form>
+                  </Dialog>
+
+
+                  <div className={classes.demo}>
+
+
                     <List dense={dense}>
-                      {documents.documents.map(value=> (
+                      {documents.documents.folders.map(value =>
+                        <ListItem key={`item-${value.folder_name}-${value.id}`}
+                                  button divider={true}
+                                  onClick={()=>{
+                                    this.props.dispatch(push("/folder/"+value.id));
+                                    this.props.dispatch(documentActions.get_files(value.id))
+                                  }}>
+                          <Icon style={{fontSize: 25, padding: 12}}>
+                            folder
+                          </Icon>
+                          <Typography style={{fontSize: 19}}>
+                            { value.folder_name }
+                          </Typography>
+
+                          <ListItemSecondaryAction>
+                            <Button variant="raised" mini className={classes.rightIcon}>
+                              <Icon>
+                                share
+                              </Icon>
+                            </Button>
+                            <Button variant="raised" mini className={classes.rightIcon}>
+                              <Icon >
+                                delete
+                              </Icon>
+                            </Button>
+                          </ListItemSecondaryAction>
+                        </ListItem>
+                      )}
+                    </List>
+
+
+                    <List dense={dense}>
+                      {documents.documents.documents.map(value=> (
                         <div key={`item-${value.file_name}-${value.id}`}>
-                          <ListItem button  onClick={()=>
+                          <ListItem button divider={true} onClick={()=>
                             this.navigate('/second', value.id)
                           }
                           >
@@ -180,8 +284,30 @@ class Home extends React.Component {
                               primary={`${value.file_name}`}
                               secondary={secondary ? 'Secondary text' : null}
                             />
+                            <ListItemSecondaryAction>
+                              <Button variant="raised" mini className={classes.rightIcon}
+                                      onClick={ () => {
+                                        this.handleShareOpenDialog();
+                                        this.setState({"share_file_id": value.id});
+                                      }
+                                      }>
+                                <Icon>
+                                  share
+                                </Icon>
+                              </Button>
+                              <Button variant="raised" mini className={classes.rightIcon}
+                                      onClick={()=> {
+                                          this.props.dispatch(documentActions.delete_document(value.id, this.props.match.params.id || null))
+                                        }
+                                      }
+                              >
+                                <Icon >
+                                  delete
+                                </Icon>
+                              </Button>
+                            </ListItemSecondaryAction>
                           </ListItem>
-                          <Divider />
+
                         </div>
 
                       ))}
@@ -202,7 +328,8 @@ Home.propTypes = {
   classes: PropTypes.object.isRequired,
   login: PropTypes.object,
   dispatch: PropTypes.func,
-  documents: PropTypes.object
+  documents: PropTypes.object,
+  match: PropTypes.object
 };
 
 function mapStateToProps(state){

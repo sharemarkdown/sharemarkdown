@@ -21,7 +21,7 @@ class Document(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     file_name = models.CharField(max_length=30)
     public = models.BooleanField(default=False)
-    content = models.TextField(default='')
+    content = models.TextField(default='', null=True)
     parent_folder = models.ForeignKey(Folder, on_delete=models.CASCADE, null=True)
     viewers = models.ManyToManyField(User, through='ViewRight', related_name='can_be_viewed_by')
     editors = models.ManyToManyField(User, through='EditRight', related_name='can_be_edited_by')
