@@ -25,7 +25,7 @@ class FolderSerializer(serializers.ModelSerializer):
 
 
 class DocumentSerializer(serializers.ModelSerializer):
-    content = serializers.CharField(allow_blank=True, trim_whitespace=False)
+    content = serializers.CharField(allow_blank=True, trim_whitespace=False, required=False)
     def create(self, validated_data):
         doc = Document.objects.create(**validated_data)
         EditRight.objects.create(user=validated_data['owner'], document=doc)
