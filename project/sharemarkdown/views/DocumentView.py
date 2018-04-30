@@ -36,18 +36,13 @@ class GetUpdateDeleteDocument(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         obj = get_object_or_404(Document, **self.kwargs)
-        print(obj.owner.id)
-        print(self.request.user.id)
-        if obj.owner.id != self.request.user.id:
+        if self.request.user not in obj.editors.all():
             raise PermissionDenied(
                 detail='You do not have permission')
         return obj
 
     def update(self, request, *args, **kwargs):
-        old_doc = get_object_or_404(Document, **kwargs)
-        if old_doc.owner.id != request.user.id:
-            raise PermissionDenied(
-                detail='You do not have permission')
+        old_doc = self.get_object()
         query_dict = request.data.copy()
         query_dict['owner'] = request.user.id
         doc_serializer = DocumentSerializer(old_doc, data=query_dict)
