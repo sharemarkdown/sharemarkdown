@@ -49,6 +49,7 @@ function register(user_){
 function login(username, password){
   function request() { return {type: userConstants.LOGIN_REQUEST, }}
   function success(user) { return {type: userConstants.LOGIN_SUCCESS, user}}
+  function failure() {return {type: userConstants.LOGIN_FAILURE, }}
   return dispatch => {
     dispatch(request({}));
     const user = {
@@ -64,6 +65,7 @@ function login(username, password){
 
         },
         error => {
+            dispatch(failure());
             dispatch(alertActions.error("Login Fail"));
             console.log(error)
         }

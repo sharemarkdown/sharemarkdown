@@ -8,6 +8,9 @@ export const documentActions={
   save_content,
   create_document,
   clear_documents,
+  share_document,
+  get_files,
+  delete_document,
 };
 
 function get_documents(){
@@ -26,6 +29,24 @@ function get_documents(){
   };
 
 }
+
+function get_files(id){
+  function request() { return {type: documentConstants.GET_DOCUMENT_REQUEST, }}
+  function success(documents){return {type: documentConstants.GET_DOCUMENT_SUCCESS, documents}}
+
+
+  return dispatch => {
+    dispatch(request({}));
+    documentApi.get_files(id)
+      .then(
+        data => {
+          dispatch(success(data));
+        }
+      )
+  };
+
+}
+
 
 function edit_documents(id){
   function request(document) {return {type: documentConstants.EDIT_DOCUMENT_REQUEST, document}}
@@ -53,20 +74,57 @@ function save_content(id, file_name, content){
   }
 }
 
-function create_document(title){
-  function success(document) {return {type: documentConstants.CREATE_DOCUMENT_SUCCESS, document}}
+function create_document(title, folder_id){
 
+  function success(document) {return {type: documentConstants.CREATE_DOCUMENT_SUCCESS, document}}
+  function request() {return {type: documentConstants.CREATE_DOCUMENT_REQUEST,}}
   return dispatch => {
-    documentApi.create_document(title)
+    dispatch(request())
+
+    documentApi.create_document(title, folder_id)
       .then(
         (data) => {
-
-          dispatch(success(data))
           dispatch(push("/second"))
+          dispatch(success(data))
+
         }
       )
   }
 }
+
+function delete_document(id, folder_id){
+  function success() {return {type: documentConstants.DELETE_DOCUMENT_SUCCESS, }}
+  return dispatch => {
+    documentApi.delete_document(id)
+      .then(
+        () => {
+          dispatch(success());
+          if(folder_id === null){
+            dispatch(get_documents());
+          }
+          else{
+            dispatch(get_files(folder_id));
+          }
+
+        }
+      )
+  }
+}
+
+function share_document(file_id, username){
+  function request() {return {type: documentConstants.SHARE_DOCUMENT_REQUEST,}}
+  function success() {return {type: documentConstants.SHARE_DOCUMENT_SUCCESS}}
+
+  return dispatch => {
+    dispatch(request())
+    documentApi.share_document(file_id, username)
+      .then(
+        () =>
+          dispatch(success())
+      )
+  }
+}
+
 
 function clear_documents(){
   return {type: documentConstants.CLEAR_DOCUMENT, }

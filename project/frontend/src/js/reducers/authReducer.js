@@ -9,8 +9,9 @@ export function login(state={}, action){
           logged_in: true,
           logging_in: false,
           user: action.user,
-        }
-        );
+        });
+    case userConstants.LOGIN_FAILURE:
+      return {};
     case userConstants.LOGOUT:
       return {};
     default:
