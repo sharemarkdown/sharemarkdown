@@ -3,7 +3,7 @@ from django.urls import path
 import sharemarkdown.views.DocumentView
 import sharemarkdown.views.FolderView
 import sharemarkdown.views.UserView
-import sharemarkdown.views.General
+import sharemarkdown.views.GeneralView
 import rest_framework.authtoken.views as token_view
 #from sharemarkdown.views import DocumentView, FolderView, UserView
 
@@ -16,7 +16,7 @@ urlpatterns = [
     path('api/login', token_view.obtain_auth_token),
     path('api/folders', sharemarkdown.views.FolderView.ListCreateFolder.as_view()),
     path('api/folder/<int:id>', sharemarkdown.views.FolderView.GetUpdateDeleteFolder.as_view()),
-    path('api/files/<int:id>', sharemarkdown.views.General.GetDocsInFolderView.as_view()),
-    path('api/files', sharemarkdown.views.General.GetDocsInFolderView.as_view()),
-    path('api/share/doc', sharemarkdown.views.General.EditRightView.as_view())
+    path('api/files/<int:id>', sharemarkdown.views.GeneralView.GetDocsInFolderView.as_view()),
+    path('api/files', sharemarkdown.views.GeneralView.GetDocsInFolderView.as_view()),
+    path('api/share/doc', sharemarkdown.views.GeneralView.EditRightView.as_view())
 ]
