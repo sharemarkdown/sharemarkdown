@@ -11,6 +11,7 @@ export const documentActions={
   share_document,
   get_files,
   delete_document,
+  create_folder,
 };
 
 function get_documents(){
@@ -44,7 +45,6 @@ function get_files(id){
         }
       )
   };
-
 }
 
 
@@ -87,6 +87,25 @@ function create_document(title, folder_id){
           dispatch(push("/second"))
           dispatch(success(data))
 
+        }
+      )
+  }
+}
+
+function create_folder(folder_name, folder_id){
+  function success() { return {type: documentConstants.CREATE_FOLDER_SUCCESS, }}
+
+  return dispatch => {
+    documentApi.create_folder(folder_name, folder_id)
+      .then(
+        () => {
+          dispatch(success())
+          if(folder_id === null){
+            dispatch(get_documents());
+          }
+          else{
+            dispatch(get_files(folder_id));
+          }
         }
       )
   }

@@ -54,6 +54,7 @@ class Home extends React.Component {
         new_file_dialog_open: false,
         title: "",
         share_user: "",
+        folder_name: "",
         share_file_id: -1,
       };
       this.handleChange = this.handleChange.bind(this);
@@ -61,7 +62,9 @@ class Home extends React.Component {
       this.handleCloseDialog = this.handleCloseDialog.bind(this);
       this.handleOpenDialog = this.handleOpenDialog.bind(this);
       this.handleShareSubmit = this.handleShareSubmit.bind(this);
-
+      this.handleFolderOpenDialog = this.handleFolderOpenDialog.bind(this);
+      this.handleFolderCloseDialog = this.handleFolderCloseDialog.bind(this);
+      this.handleFolderSubmit = this.handleFolderSubmit.bind(this);
     }
     componentWillReceiveProps(nextProps) {
       console.log("Hiii")
@@ -106,12 +109,18 @@ class Home extends React.Component {
     handleOpenDialog = () => {
       this.props.dispatch({type: documentConstants.CREATE_DOCUMENT_REQUEST,})
     }
+    handleFolderOpenDialog = () => {
+      this.props.dispatch({type: documentConstants.CREATE_FOLDER_REQUEST, })
+    }
     handleCloseDialog = () => {
       this.props.dispatch({type: documentConstants.CREATE_DOCUMENT_CANCEL,})
     }
+    handleFolderCloseDialog = () => {
+      this.props.dispatch({ type: documentConstants.CREATE_FOLDER_CANCEL, })
+    }
     handleShareOpenDialog = () => {
       this.props.dispatch({type: documentConstants.SHARE_DOCUMENT_REQUEST,})
-      this.setState()
+
     }
     handleShareCloseDialog = () => {
       this.props.dispatch({type: documentConstants.SHARE_DOCUMENT_CANCEL,})
@@ -120,9 +129,19 @@ class Home extends React.Component {
     handleEditSubmit(event){
       event.preventDefault();
       const { dispatch } = this.props;
+
       dispatch(documentActions.create_document(this.state.title, this.props.match.params.id || null));
       this.handleCloseDialog();
       this.setState({title: "" })
+    }
+
+    handleFolderSubmit(event){
+      event.preventDefault();
+      const { dispatch } = this.props;
+
+      dispatch(documentActions.create_folder(this.state.folder_name, this.props.match.params.id || null));
+      this.handleFolderCloseDialog();
+      this.setState({folder_name: "" })
     }
 
 
@@ -158,8 +177,8 @@ class Home extends React.Component {
                     <Grid item xs={24}>
                       <Button color="primary"
                               className={classes.btn}
-                              name="new_file_dialog_open"
-                              onClick={this.handleOpenDialog}
+                              name="folder"
+                              onClick={this.handleFolderOpenDialog}
                       >
                         New Folder
                       </Button>
@@ -170,14 +189,14 @@ class Home extends React.Component {
                   </Grid>
 
                     <Dialog
-                      open={documents.create_request}
+                      open={documents.create_document_request}
                       onClose={
                         this.handleCloseDialog
                       }
                       aria-labelledby="form-dialog-title"
                     >
                       <form onSubmit={this.handleEditSubmit} >
-                        <DialogTitle id="form-dialog-title">New File</DialogTitle>
+                        <DialogTitle id="form-dialog-title">{documents.create_type}</DialogTitle>
                         <DialogContent>
 
                           <TextField
@@ -203,6 +222,40 @@ class Home extends React.Component {
                       </form>
                     </Dialog>
 
+                  <Dialog
+                    open={documents.create_folder_request}
+                    onClose={
+                      this.handleFolderCloseDialog
+                    }
+                    aria-labelledby="form-dialog-title"
+                  >
+                    <form onSubmit={this.handleFolderSubmit} >
+                      <DialogTitle id="form-dialog-title">{documents.create_type}</DialogTitle>
+                      <DialogContent>
+
+                        <TextField
+                          value={this.state.folder_name}
+                          autoFocus
+                          margin="dense"
+                          id="folder_name"
+                          name="folder_name"
+                          label="folder_name"
+                          placeholder="Folder name"
+                          onChange={this.handleChange}
+                          fullWidth
+                        />
+                      </DialogContent>
+                      <DialogActions>
+                        <Button name="new_file_dialog_open" onClick={this.handleFolderCloseDialog} color="primary">
+                          Cancel
+                        </Button>
+                        <Button type="submit" color="primary">
+                          Create
+                        </Button>
+                      </DialogActions>
+                    </form>
+                  </Dialog>
+
 
                   <Dialog
                     open={documents.share_request}
@@ -212,7 +265,6 @@ class Home extends React.Component {
                     <form onSubmit={this.handleShareSubmit} >
                       <DialogTitle id="form-dialog-title">Please enter the username:</DialogTitle>
                       <DialogContent>
-
                         <TextField
                           value={this.state.share_user}
                           autoFocus
@@ -238,15 +290,13 @@ class Home extends React.Component {
 
 
                   <div className={classes.demo}>
-
-
                     <List dense={dense}>
                       {documents.documents.folders.map(value =>
                         <ListItem key={`item-${value.folder_name}-${value.id}`}
                                   button divider={true}
                                   onClick={()=>{
+                                    this.props.dispatch(documentActions.get_files(value.id));
                                     this.props.dispatch(push("/folder/"+value.id));
-                                    this.props.dispatch(documentActions.get_files(value.id))
                                   }}>
                           <Icon style={{fontSize: 25, padding: 12}}>
                             folder
@@ -307,9 +357,7 @@ class Home extends React.Component {
                               </Button>
                             </ListItemSecondaryAction>
                           </ListItem>
-
                         </div>
-
                       ))}
                     </List>
                   </div>
