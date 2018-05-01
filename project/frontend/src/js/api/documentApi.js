@@ -11,6 +11,7 @@ export const documentApi ={
   share_document,
   get_files,
   delete_document,
+  create_folder,
   // save_document,
 };
 
@@ -43,7 +44,7 @@ function get_files(id){
 
 function get_document(id){
   return new Promise((resolve, reject) =>{
-    axios.get('/sharemarkdown/api/file/'+id)
+    axios.get('/sharemarkdown/api/document/'+id)
       .then( response => {
         resolve(response.data)
       })
@@ -70,6 +71,18 @@ function save_content(id, file_name, content){
 function create_document(file_name, folder_id){
   return new Promise((resolve, reject) =>{
     axios.post('/sharemarkdown/api/documents', {"file_name": file_name, "parent_folder": folder_id})
+      .then( response => {
+        resolve(response.data)
+      })
+      .catch( error => {
+        reject(error)
+      })
+  })
+}
+
+function create_folder(folder_name, folder_id){
+  return new Promise((resolve, reject) => {
+    axios.post('/sharemarkdown/api/folders', {"folder_name": folder_name, "parent_folder": folder_id})
       .then( response => {
         resolve(response.data)
       })
